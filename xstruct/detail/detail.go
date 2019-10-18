@@ -87,7 +87,7 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("type ")
 	buf.WriteString(class.UserName)
-	buf.WriteString(" {\n")
+	buf.WriteString(" struct {\n")
 	buf.WriteString("    // define attribute\n")
 	for k, _ := range class.Attributes {
 		buf.WriteString("    ")
