@@ -97,7 +97,7 @@ func WriteClassDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 	for k, _ := range class.Attributes {
 		buf.WriteString("    ")
 		buf.WriteString("Attr")
-		buf.WriteString(fixWord(opt, toWord(k)))
+		buf.WriteString(k)
 		buf.WriteString(" string `xml:\"")
 		buf.WriteString(k)
 		buf.WriteString(",attr\"`\n")
