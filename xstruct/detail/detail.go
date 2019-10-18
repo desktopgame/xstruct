@@ -10,8 +10,9 @@ import (
 )
 
 type Option struct {
-	Prefix string
-	Suffix string
+	Package string
+	Prefix  string
+	Suffix  string
 }
 
 func CreateProgram(path string, opt Option) bytes.Buffer {
@@ -30,6 +31,9 @@ func CreateProgram(path string, opt Option) bytes.Buffer {
 		log.Fatal(err)
 	}
 	var buf bytes.Buffer
+	buf.WriteString("package ")
+	buf.WriteString(opt.Package)
+	buf.WriteString("\n")
 	for _, class := range namespace.Map {
 		WriteClassDef(opt, &buf, class)
 	}
