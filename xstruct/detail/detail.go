@@ -3,6 +3,7 @@ package detail
 import (
 	"bytes"
 	"log"
+	"unicode"
 
 	"github.com/beevik/etree"
 	"github.com/desktopgame/xstruct/xstruct"
@@ -38,9 +39,9 @@ func CreateProgram(path string) bytes.Buffer {
 func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	// LoadFunc
 	buf.WriteString("func Load")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString("(path string) ")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString(" {")
 	buf.WriteString(`
     xmlFile, err := os.Open(path)
@@ -54,7 +55,7 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
     }`)
 	buf.WriteString("\n")
 	buf.WriteString("    var data ")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString(`
     xml.Unmarshal(xmlData, &data)
     return &data, nil`)
@@ -63,9 +64,9 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("\n")
 	// SaveFunc
 	buf.WriteString("func Save")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString("(path string, data *")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString(", perm uint32) error")
 	buf.WriteString(" {")
 	buf.WriteString(`
@@ -85,13 +86,13 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 
 func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("type ")
-	buf.WriteString(class.UniqueName)
+	buf.WriteString(class.UserName)
 	buf.WriteString(" {\n")
 	buf.WriteString("    // define attribute\n")
 	for k, _ := range class.Attributes {
 		buf.WriteString("    ")
 		buf.WriteString("Attr")
-		buf.WriteString(k)
+		buf.WriteString(toWord(k))
 		buf.WriteString(" string `xml:\"")
 		buf.WriteString(k)
 		buf.WriteString(",attr\"\n")
@@ -100,9 +101,9 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	for _, class := range class.InnerClasses {
 		buf.WriteString("    ")
 		buf.WriteString("Sub")
-		buf.WriteString(class.SimpleName)
+		buf.WriteString(toWord(class.SimpleUserName))
 		buf.WriteString(" []*")
-		buf.WriteString(class.UniqueName)
+		buf.WriteString(class.UserName)
 		buf.WriteString(" `xml:\"")
 		buf.WriteString(class.SimpleName)
 		buf.WriteString("\"\n")
@@ -110,4 +111,16 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("    // define content\n")
 	buf.WriteString("    Content string `xml:\",chardata\"`\n")
 	buf.WriteString("}\n")
+}
+
+func toWord(str string) string {
+	var buf bytes.Buffer
+	for idx, rn := range str {
+		if idx == 0 {
+			buf.WriteRune(unicode.ToUpper(rn))
+		} else {
+			buf.WriteRune(rn)
+		}
+	}
+	return buf.String()
 }

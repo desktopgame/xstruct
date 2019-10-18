@@ -1,8 +1,10 @@
 package xstruct
 
 import (
+	"bytes"
 	"errors"
 	"strings"
+	"unicode"
 )
 
 // Namespace is container of class
@@ -12,20 +14,26 @@ type Namespace struct {
 
 // Class is golang struct
 type Class struct {
-	UniqueName   string
-	SimpleName   string
-	Attributes   map[string]string
-	InnerClasses []*Class
+	UniqueName     string
+	UserName       string
+	SimpleName     string
+	SimpleUserName string
+	Attributes     map[string]string
+	InnerClasses   []*Class
 }
 
 // DefineClassA is define unique class by array
 func DefineClassA(namespace *Namespace, path []string) (*Class, error) {
 	un := strings.Join(path, "")
-	return DefineClass(namespace, un, path[len(path)-1])
+	var buf bytes.Buffer
+	for _, component := range path {
+		buf.WriteString(strings.Title(strings.ToLower(component)))
+	}
+	return DefineClass(namespace, un, buf.String(), path[len(path)-1])
 }
 
 // DefineClass is define unique class
-func DefineClass(namespace *Namespace, uniqueName string, simpleName string) (*Class, error) {
+func DefineClass(namespace *Namespace, uniqueName string, userName string, simpleName string) (*Class, error) {
 	if val, ok := namespace.Map[uniqueName]; ok {
 		if val.SimpleName != simpleName {
 			return nil, errors.New("required class already defined")
@@ -33,9 +41,11 @@ func DefineClass(namespace *Namespace, uniqueName string, simpleName string) (*C
 		return val, nil
 	}
 	ret := &Class{
-		UniqueName: uniqueName,
-		SimpleName: simpleName,
-		Attributes: make(map[string]string),
+		UniqueName:     uniqueName,
+		UserName:       userName,
+		SimpleName:     simpleName,
+		SimpleUserName: toWord(simpleName),
+		Attributes:     make(map[string]string),
 	}
 	namespace.Map[uniqueName] = ret
 	return ret, nil
@@ -70,4 +80,16 @@ func DefineClassTree(namespace *Namespace, scope *Scope) error {
 		DefineClassTree(namespace, child)
 	}
 	return nil
+}
+
+func toWord(str string) string {
+	var buf bytes.Buffer
+	for idx, rn := range str {
+		if idx == 0 {
+			buf.WriteRune(unicode.ToUpper(rn))
+		} else {
+			buf.WriteRune(rn)
+		}
+	}
+	return buf.String()
 }

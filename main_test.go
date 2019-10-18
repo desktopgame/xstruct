@@ -21,3 +21,8 @@ func TestUser(t *testing.T) {
 	buf := detail.CreateProgram("./testdata/Planet.vcxproj.user")
 	fmt.Println(buf.String())
 }
+
+func TestPackage(t *testing.T) {
+	buf := detail.CreateProgram("./testdata/packages.config")
+	fmt.Println(buf.String())
+}
