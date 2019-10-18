@@ -34,19 +34,19 @@ VisualStudioのnuget定義ファイルを構造体へ変換する
 **OUTPUT**
 ````
 package main
+type PackagesPackage struct {
+    // define attribute
+    AttrId string `xml:"id,attr"`
+    AttrVersion string `xml:"version,attr"`
+    AttrTargetFramework string `xml:"targetFramework,attr"`
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
 type Packages struct {
     // define attribute
     // define subelement
     SubPackage []*PackagesPackage `xml:"package"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type PackagesPackage struct {
-    // define attribute
-    AttrtargetFramework string `xml:"targetFramework,attr"`
-    Attrid string `xml:"id,attr"`
-    Attrversion string `xml:"version,attr"`
-    // define subelement
     // define content
     Content string `xml:",chardata"`
 }
@@ -542,39 +542,111 @@ VisualStudioのプロジェクトを構造体へ変換する
 **OUTPUT**
 ````
 package main
-type ProjectItemDefinitionGroup struct {
-    // define attribute
-    AttrCondition string `xml:"Condition,attr"`
-    // define subelement
-    SubClCompile []*ProjectItemDefinitionGroupClCompile `xml:"ClCompile"`
-    SubLink []*ProjectItemDefinitionGroupLink `xml:"Link"`
-    SubPreBuildEvent []*ProjectItemDefinitionGroupPreBuildEvent `xml:"PreBuildEvent"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectPropertyGroupPlatformToolset struct {
+type ProjectItemGroupProjectConfigurationPlatform struct {
     // define attribute
     // define subelement
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupPreBuildEvent struct {
-    // define attribute
-    // define subelement
-    SubCommand []*ProjectItemDefinitionGroupPreBuildEventCommand `xml:"Command"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupLinkAdditionalLibraryDirectories struct {
+type ProjectItemDefinitionGroupClCompileRuntimeLibrary struct {
     // define attribute
     // define subelement
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectTargetPropertyGroup struct {
+type ProjectItemGroupClCompile struct {
+    // define attribute
+    AttrInclude string `xml:"Include,attr"`
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectPropertyGroupUseDebugLibraries struct {
     // define attribute
     // define subelement
-    SubErrorText []*ProjectTargetPropertyGroupErrorText `xml:"ErrorText"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupLink struct {
+    // define attribute
+    // define subelement
+    SubAdditionalLibraryDirectories []*ProjectItemDefinitionGroupLinkAdditionalLibraryDirectories `xml:"AdditionalLibraryDirectories"`
+    SubAdditionalDependencies []*ProjectItemDefinitionGroupLinkAdditionalDependencies `xml:"AdditionalDependencies"`
+    SubEnableCOMDATFolding []*ProjectItemDefinitionGroupLinkEnableCOMDATFolding `xml:"EnableCOMDATFolding"`
+    SubOptimizeReferences []*ProjectItemDefinitionGroupLinkOptimizeReferences `xml:"OptimizeReferences"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileSDLCheck struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileLanguageStandard struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupLinkOptimizeReferences struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type Project struct {
+    // define attribute
+    AttrDefaultTargets string `xml:"DefaultTargets,attr"`
+    AttrToolsVersion string `xml:"ToolsVersion,attr"`
+    AttrXmlns string `xml:"xmlns,attr"`
+    // define subelement
+    SubImport []*ProjectImport `xml:"Import"`
+    SubItemGroup []*ProjectItemGroup `xml:"ItemGroup"`
+    SubPropertyGroup []*ProjectPropertyGroup `xml:"PropertyGroup"`
+    SubImportGroup []*ProjectImportGroup `xml:"ImportGroup"`
+    SubItemDefinitionGroup []*ProjectItemDefinitionGroup `xml:"ItemDefinitionGroup"`
+    SubTarget []*ProjectTarget `xml:"Target"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectPropertyGroupVCProjectVersion struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectPropertyGroupConfigurationType struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectTarget struct {
+    // define attribute
+    AttrBeforeTargets string `xml:"BeforeTargets,attr"`
+    AttrName string `xml:"Name,attr"`
+    // define subelement
+    SubPropertyGroup []*ProjectTargetPropertyGroup `xml:"PropertyGroup"`
+    SubError []*ProjectTargetError `xml:"Error"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileOptimization struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileConformanceMode struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileAdditionalIncludeDirectories struct {
+    // define attribute
+    // define subelement
     // define content
     Content string `xml:",chardata"`
 }
@@ -587,8 +659,8 @@ type ProjectItemGroupClInclude struct {
 }
 type ProjectImport struct {
     // define attribute
-    AttrCondition string `xml:"Condition,attr"`
     AttrProject string `xml:"Project,attr"`
+    AttrCondition string `xml:"Condition,attr"`
     // define subelement
     // define content
     Content string `xml:",chardata"`
@@ -604,27 +676,51 @@ type ProjectItemGroup struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectPropertyGroupUseDebugLibraries struct {
+type ProjectItemDefinitionGroup struct {
+    // define attribute
+    AttrCondition string `xml:"Condition,attr"`
+    // define subelement
+    SubClCompile []*ProjectItemDefinitionGroupClCompile `xml:"ClCompile"`
+    SubLink []*ProjectItemDefinitionGroupLink `xml:"Link"`
+    SubPreBuildEvent []*ProjectItemDefinitionGroupPreBuildEvent `xml:"PreBuildEvent"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompile struct {
+    // define attribute
+    // define subelement
+    SubWarningLevel []*ProjectItemDefinitionGroupClCompileWarningLevel `xml:"WarningLevel"`
+    SubOptimization []*ProjectItemDefinitionGroupClCompileOptimization `xml:"Optimization"`
+    SubSDLCheck []*ProjectItemDefinitionGroupClCompileSDLCheck `xml:"SDLCheck"`
+    SubConformanceMode []*ProjectItemDefinitionGroupClCompileConformanceMode `xml:"ConformanceMode"`
+    SubAdditionalIncludeDirectories []*ProjectItemDefinitionGroupClCompileAdditionalIncludeDirectories `xml:"AdditionalIncludeDirectories"`
+    SubLanguageStandard []*ProjectItemDefinitionGroupClCompileLanguageStandard `xml:"LanguageStandard"`
+    SubPreprocessorDefinitions []*ProjectItemDefinitionGroupClCompilePreprocessorDefinitions `xml:"PreprocessorDefinitions"`
+    SubRuntimeLibrary []*ProjectItemDefinitionGroupClCompileRuntimeLibrary `xml:"RuntimeLibrary"`
+    SubFunctionLevelLinking []*ProjectItemDefinitionGroupClCompileFunctionLevelLinking `xml:"FunctionLevelLinking"`
+    SubIntrinsicFunctions []*ProjectItemDefinitionGroupClCompileIntrinsicFunctions `xml:"IntrinsicFunctions"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupClCompileIntrinsicFunctions struct {
     // define attribute
     // define subelement
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectPropertyGroupWholeProgramOptimization struct {
+type ProjectTargetPropertyGroup struct {
     // define attribute
     // define subelement
+    SubErrorText []*ProjectTargetPropertyGroupErrorText `xml:"ErrorText"`
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupClCompileRuntimeLibrary struct {
+type ProjectImportGroup struct {
     // define attribute
+    AttrLabel string `xml:"Label,attr"`
+    AttrCondition string `xml:"Condition,attr"`
     // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupLinkAdditionalDependencies struct {
-    // define attribute
-    // define subelement
+    SubImport []*ProjectImportGroupImport `xml:"Import"`
     // define content
     Content string `xml:",chardata"`
 }
@@ -643,13 +739,21 @@ type ProjectImportGroupImport struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupLink struct {
+type ProjectPropertyGroupWholeProgramOptimization struct {
     // define attribute
     // define subelement
-    SubAdditionalLibraryDirectories []*ProjectItemDefinitionGroupLinkAdditionalLibraryDirectories `xml:"AdditionalLibraryDirectories"`
-    SubAdditionalDependencies []*ProjectItemDefinitionGroupLinkAdditionalDependencies `xml:"AdditionalDependencies"`
-    SubEnableCOMDATFolding []*ProjectItemDefinitionGroupLinkEnableCOMDATFolding `xml:"EnableCOMDATFolding"`
-    SubOptimizeReferences []*ProjectItemDefinitionGroupLinkOptimizeReferences `xml:"OptimizeReferences"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupLinkAdditionalLibraryDirectories struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupLinkEnableCOMDATFolding struct {
+    // define attribute
+    // define subelement
     // define content
     Content string `xml:",chardata"`
 }
@@ -660,10 +764,8 @@ type ProjectItemGroupNone struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectTargetError struct {
+type ProjectTargetPropertyGroupErrorText struct {
     // define attribute
-    AttrCondition string `xml:"Condition,attr"`
-    AttrText string `xml:"Text,attr"`
     // define subelement
     // define content
     Content string `xml:",chardata"`
@@ -685,99 +787,13 @@ type ProjectPropertyGroup struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemGroupProjectConfiguration struct {
-    // define attribute
-    AttrInclude string `xml:"Include,attr"`
-    // define subelement
-    SubConfiguration []*ProjectItemGroupProjectConfigurationConfiguration `xml:"Configuration"`
-    SubPlatform []*ProjectItemGroupProjectConfigurationPlatform `xml:"Platform"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectPropertyGroupCharacterSet struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupClCompileOptimization struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupClCompilePreprocessorDefinitions struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type Project struct {
-    // define attribute
-    Attrxmlns string `xml:"xmlns,attr"`
-    AttrDefaultTargets string `xml:"DefaultTargets,attr"`
-    AttrToolsVersion string `xml:"ToolsVersion,attr"`
-    // define subelement
-    SubImport []*ProjectImport `xml:"Import"`
-    SubItemGroup []*ProjectItemGroup `xml:"ItemGroup"`
-    SubPropertyGroup []*ProjectPropertyGroup `xml:"PropertyGroup"`
-    SubImportGroup []*ProjectImportGroup `xml:"ImportGroup"`
-    SubItemDefinitionGroup []*ProjectItemDefinitionGroup `xml:"ItemDefinitionGroup"`
-    SubTarget []*ProjectTarget `xml:"Target"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectTarget struct {
-    // define attribute
-    AttrBeforeTargets string `xml:"BeforeTargets,attr"`
-    AttrName string `xml:"Name,attr"`
-    // define subelement
-    SubPropertyGroup []*ProjectTargetPropertyGroup `xml:"PropertyGroup"`
-    SubError []*ProjectTargetError `xml:"Error"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemGroupProjectConfigurationPlatform struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
 type ProjectPropertyGroupProjectGuid struct {
     // define attribute
     // define subelement
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupClCompile struct {
-    // define attribute
-    // define subelement
-    SubWarningLevel []*ProjectItemDefinitionGroupClCompileWarningLevel `xml:"WarningLevel"`
-    SubOptimization []*ProjectItemDefinitionGroupClCompileOptimization `xml:"Optimization"`
-    SubSDLCheck []*ProjectItemDefinitionGroupClCompileSDLCheck `xml:"SDLCheck"`
-    SubConformanceMode []*ProjectItemDefinitionGroupClCompileConformanceMode `xml:"ConformanceMode"`
-    SubAdditionalIncludeDirectories []*ProjectItemDefinitionGroupClCompileAdditionalIncludeDirectories `xml:"AdditionalIncludeDirectories"`
-    SubLanguageStandard []*ProjectItemDefinitionGroupClCompileLanguageStandard `xml:"LanguageStandard"`
-    SubPreprocessorDefinitions []*ProjectItemDefinitionGroupClCompilePreprocessorDefinitions `xml:"PreprocessorDefinitions"`
-    SubRuntimeLibrary []*ProjectItemDefinitionGroupClCompileRuntimeLibrary `xml:"RuntimeLibrary"`
-    SubFunctionLevelLinking []*ProjectItemDefinitionGroupClCompileFunctionLevelLinking `xml:"FunctionLevelLinking"`
-    SubIntrinsicFunctions []*ProjectItemDefinitionGroupClCompileIntrinsicFunctions `xml:"IntrinsicFunctions"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupLinkOptimizeReferences struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectPropertyGroupVCProjectVersion struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectPropertyGroupWindowsTargetPlatformVersion struct {
+type ProjectPropertyGroupCharacterSet struct {
     // define attribute
     // define subelement
     // define content
@@ -789,7 +805,35 @@ type ProjectItemDefinitionGroupClCompileWarningLevel struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupClCompileLanguageStandard struct {
+type ProjectItemDefinitionGroupClCompileFunctionLevelLinking struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemGroupProjectConfiguration struct {
+    // define attribute
+    AttrInclude string `xml:"Include,attr"`
+    // define subelement
+    SubConfiguration []*ProjectItemGroupProjectConfigurationConfiguration `xml:"Configuration"`
+    SubPlatform []*ProjectItemGroupProjectConfigurationPlatform `xml:"Platform"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectPropertyGroupPlatformToolset struct {
+    // define attribute
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupPreBuildEvent struct {
+    // define attribute
+    // define subelement
+    SubCommand []*ProjectItemDefinitionGroupPreBuildEventCommand `xml:"Command"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type ProjectItemDefinitionGroupLinkAdditionalDependencies struct {
     // define attribute
     // define subelement
     // define content
@@ -801,47 +845,10 @@ type ProjectItemDefinitionGroupPreBuildEventCommand struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectTargetPropertyGroupErrorText struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectImportGroup struct {
+type ProjectTargetError struct {
     // define attribute
     AttrCondition string `xml:"Condition,attr"`
-    AttrLabel string `xml:"Label,attr"`
-    // define subelement
-    SubImport []*ProjectImportGroupImport `xml:"Import"`
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectPropertyGroupConfigurationType struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupClCompileConformanceMode struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupClCompileAdditionalIncludeDirectories struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupClCompileFunctionLevelLinking struct {
-    // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemDefinitionGroupLinkEnableCOMDATFolding struct {
-    // define attribute
+    AttrText string `xml:"Text,attr"`
     // define subelement
     // define content
     Content string `xml:",chardata"`
@@ -852,21 +859,14 @@ type ProjectItemGroupProjectConfigurationConfiguration struct {
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupClCompileSDLCheck struct {
+type ProjectPropertyGroupWindowsTargetPlatformVersion struct {
     // define attribute
     // define subelement
     // define content
     Content string `xml:",chardata"`
 }
-type ProjectItemDefinitionGroupClCompileIntrinsicFunctions struct {
+type ProjectItemDefinitionGroupClCompilePreprocessorDefinitions struct {
     // define attribute
-    // define subelement
-    // define content
-    Content string `xml:",chardata"`
-}
-type ProjectItemGroupClCompile struct {
-    // define attribute
-    AttrInclude string `xml:"Include,attr"`
     // define subelement
     // define content
     Content string `xml:",chardata"`
