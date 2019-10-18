@@ -40,9 +40,9 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	// LoadFunc
 	buf.WriteString("func Load")
 	buf.WriteString(class.UserName)
-	buf.WriteString("(path string) ")
+	buf.WriteString("(path string) (")
 	buf.WriteString(class.UserName)
-	buf.WriteString(" {")
+	buf.WriteString(", error) {")
 	buf.WriteString(`
     xmlFile, err := os.Open(path)
     if err != nil {
@@ -67,7 +67,7 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString(class.UserName)
 	buf.WriteString("(path string, data *")
 	buf.WriteString(class.UserName)
-	buf.WriteString(", perm uint32) error")
+	buf.WriteString(", perm os.FileMode) error")
 	buf.WriteString(" {")
 	buf.WriteString(`
     buf, err := xml.MarshalIndent(data, "", "    ")
