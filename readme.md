@@ -14,6 +14,72 @@ xstruct -package mypkg -prefix=Prefix -suffix=Suffix data.xml
 ````
 
 # sample
+VisualStudioのnuget定義ファイルを構造体へ変換する
+
+**INPUT**
+````
+<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  <package id="freeglut" version="2.8.1.15" targetFramework="native" />
+  <package id="freeglut.redist" version="2.8.1.15" targetFramework="native" />
+  <package id="freetype" version="2.8.0.1" targetFramework="native" />
+  <package id="freetype.redist" version="2.8.0.1" targetFramework="native" />
+  <package id="glew" version="1.9.0.1" targetFramework="native" />
+  <package id="glew.redist" version="1.9.0.1" targetFramework="native" />
+  <package id="glfw" version="3.3.0.1" targetFramework="native" />
+  <package id="glm" version="0.9.9.600" targetFramework="native" />
+  <package id="soil" version="1.16.0" targetFramework="native" />
+</packages>
+````
+**OUTPUT**
+````
+package main
+type Packages struct {
+    // define attribute
+    // define subelement
+    SubPackage []*PackagesPackage `xml:"package"`
+    // define content
+    Content string `xml:",chardata"`
+}
+type PackagesPackage struct {
+    // define attribute
+    AttrtargetFramework string `xml:"targetFramework,attr"`
+    Attrid string `xml:"id,attr"`
+    Attrversion string `xml:"version,attr"`
+    // define subelement
+    // define content
+    Content string `xml:",chardata"`
+}
+func LoadPackages(path string) (*Packages, error) {
+    xmlFile, err := os.Open(path)
+    if err != nil {
+    	return nil, err
+    }
+    defer xmlFile.Close()
+    xmlData, err := ioutil.ReadAll(xmlFile)
+    if err != nil {
+    	return nil, err
+    }
+    var data Packages
+    xml.Unmarshal(xmlData, &data)
+    return &data, nil
+}
+
+func SavePackages(path string, data *Packages, perm os.FileMode) error {
+    buf, err := xml.MarshalIndent(data, "", "    ")
+    if err != nil {
+        return err
+    }
+    err = ioutil.WriteFile(path, buf, perm)
+    if err != nil {
+    	return err
+    }
+    return nil
+}
+````
+
+# sample2
+もう少し大きなサンプル
 VisualStudioのプロジェクトを構造体へ変換する
 
 **INPUT**
