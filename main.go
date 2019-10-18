@@ -12,6 +12,9 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Fatal("not enough argument")
 	}
-	buf := detail.CreateProgram(os.Args[1])
+	buf := detail.CreateProgram(os.Args[1], detail.Option{
+		Prefix: "",
+		Suffix: "",
+	})
 	fmt.Println(buf.String())
 }

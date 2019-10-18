@@ -9,7 +9,12 @@ import (
 	"github.com/desktopgame/xstruct/xstruct"
 )
 
-func CreateProgram(path string) bytes.Buffer {
+type Option struct {
+	Prefix string
+	Suffix string
+}
+
+func CreateProgram(path string, opt Option) bytes.Buffer {
 	edoc := etree.NewDocument()
 	err := edoc.ReadFromFile(path)
 	if err != nil {
@@ -26,22 +31,22 @@ func CreateProgram(path string) bytes.Buffer {
 	}
 	var buf bytes.Buffer
 	for _, class := range namespace.Map {
-		WriteClassDef(&buf, class)
+		WriteClassDef(opt, &buf, class)
 	}
 	root, err := xstruct.DefineClassA(namespace, sc.ToPath())
 	if err != nil {
 		log.Fatal(err)
 	}
-	WriteFuncDef(&buf, root)
+	WriteFuncDef(opt, &buf, root)
 	return buf
 }
 
-func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
+func WriteFuncDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 	// LoadFunc
 	buf.WriteString("func Load")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString("(path string) (*")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString(", error) {")
 	buf.WriteString(`
     xmlFile, err := os.Open(path)
@@ -55,7 +60,7 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
     }`)
 	buf.WriteString("\n")
 	buf.WriteString("    var data ")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString(`
     xml.Unmarshal(xmlData, &data)
     return &data, nil`)
@@ -64,9 +69,9 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("\n")
 	// SaveFunc
 	buf.WriteString("func Save")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString("(path string, data *")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString(", perm os.FileMode) error")
 	buf.WriteString(" {")
 	buf.WriteString(`
@@ -84,15 +89,15 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("}")
 }
 
-func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
+func WriteClassDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("type ")
-	buf.WriteString(class.UserName)
+	buf.WriteString(fixWord(opt, class.UserName))
 	buf.WriteString(" struct {\n")
 	buf.WriteString("    // define attribute\n")
 	for k, _ := range class.Attributes {
 		buf.WriteString("    ")
 		buf.WriteString("Attr")
-		buf.WriteString(toWord(k))
+		buf.WriteString(fixWord(opt, toWord(k)))
 		buf.WriteString(" string `xml:\"")
 		buf.WriteString(k)
 		buf.WriteString(",attr\"`\n")
@@ -103,7 +108,7 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 		buf.WriteString("Sub")
 		buf.WriteString(toWord(class.SimpleUserName))
 		buf.WriteString(" []*")
-		buf.WriteString(class.UserName)
+		buf.WriteString(fixWord(opt, class.UserName))
 		buf.WriteString(" `xml:\"")
 		buf.WriteString(class.SimpleName)
 		buf.WriteString("\"`\n")
@@ -111,6 +116,10 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("    // define content\n")
 	buf.WriteString("    Content string `xml:\",chardata\"`\n")
 	buf.WriteString("}\n")
+}
+
+func fixWord(opt Option, str string) string {
+	return opt.Prefix + str + opt.Suffix
 }
 
 func toWord(str string) string {
