@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/desktopgame/xstruct/xstruct"
 
@@ -10,9 +11,11 @@ import (
 )
 
 func main() {
-	fmt.Println("hello")
+	if len(os.Args) < 2 {
+		log.Fatal("not enough argument")
+	}
 	edoc := etree.NewDocument()
-	err := edoc.ReadFromFile("./testdata/Planet.vcxproj")
+	err := edoc.ReadFromFile(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
