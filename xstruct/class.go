@@ -20,7 +20,7 @@ type Class struct {
 
 // DefineClassA is define unique class by array
 func DefineClassA(namespace *Namespace, path []string) (*Class, error) {
-	un := strings.Join(path[:], "")
+	un := strings.Join(path, "")
 	return DefineClass(namespace, un, path[len(path)-1])
 }
 
@@ -55,7 +55,16 @@ func DefineClassTree(namespace *Namespace, scope *Scope) error {
 		if err != nil {
 			return err
 		}
-		class.InnerClasses = append(class.InnerClasses, e)
+		found := false
+		for _, ic := range class.InnerClasses {
+			if ic == e {
+				found = true
+				break
+			}
+		}
+		if !found {
+			class.InnerClasses = append(class.InnerClasses, e)
+		}
 	}
 	for _, child := range scope.Children {
 		DefineClassTree(namespace, child)

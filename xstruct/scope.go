@@ -17,6 +17,7 @@ func XMLToScopeTree(elem *etree.Element) *Scope {
 		Name:       elem.Tag,
 		Content:    elem.Text(),
 		Attributes: make(map[string]string),
+		Parent:     nil,
 	}
 	for _, child := range elem.ChildElements() {
 		childScope := XMLToScopeTree(child)
@@ -34,7 +35,7 @@ func (scope *Scope) ToPath() []string {
 	var buf []string
 	iter := scope
 	for iter != nil {
-		buf = append(buf, scope.Name)
+		buf = append(buf, iter.Name)
 		iter = iter.Parent
 	}
 	//see:https://stackoverflow.com/questions/19239449/how-do-i-reverse-an-array-in-go
