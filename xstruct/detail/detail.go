@@ -36,6 +36,7 @@ func CreateProgram(path string) bytes.Buffer {
 }
 
 func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
+	// LoadFunc
 	buf.WriteString("func Load")
 	buf.WriteString(class.UniqueName)
 	buf.WriteString("(path string) ")
@@ -58,6 +59,16 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
     xml.Unmarshal(xmlData, &data)
     return &data, nil`)
 	buf.WriteString("\n}")
+	buf.WriteString("\n")
+	buf.WriteString("\n")
+	// SaveFunc
+	buf.WriteString("func Save")
+	buf.WriteString(class.UniqueName)
+	buf.WriteString("(path string, data *")
+	buf.WriteString(class.UniqueName)
+	buf.WriteString(")")
+	buf.WriteString(" {\n")
+	buf.WriteString("}")
 }
 
 func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
