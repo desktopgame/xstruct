@@ -66,8 +66,20 @@ func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString(class.UniqueName)
 	buf.WriteString("(path string, data *")
 	buf.WriteString(class.UniqueName)
-	buf.WriteString(")")
-	buf.WriteString(" {\n")
+	buf.WriteString(", perm uint32) error")
+	buf.WriteString(" {")
+	buf.WriteString(`
+    buf, err := xml.MarshalIndent(data, "", "    ")
+    if err != nil {
+        return err
+    }`)
+	buf.WriteString(`
+    err = ioutil.WriteFile(path, buf, perm)
+    if err != nil {
+    	return err
+    }`)
+	buf.WriteString("\n")
+	buf.WriteString("    return nil\n")
 	buf.WriteString("}")
 }
 
