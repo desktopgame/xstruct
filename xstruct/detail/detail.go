@@ -95,7 +95,7 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 		buf.WriteString(toWord(k))
 		buf.WriteString(" string `xml:\"")
 		buf.WriteString(k)
-		buf.WriteString(",attr\"\n")
+		buf.WriteString(",attr\"`\n")
 	}
 	buf.WriteString("    // define subelement\n")
 	for _, class := range class.InnerClasses {
@@ -106,7 +106,7 @@ func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 		buf.WriteString(class.UserName)
 		buf.WriteString(" `xml:\"")
 		buf.WriteString(class.SimpleName)
-		buf.WriteString("\"\n")
+		buf.WriteString("\"`\n")
 	}
 	buf.WriteString("    // define content\n")
 	buf.WriteString("    Content string `xml:\",chardata\"`\n")
