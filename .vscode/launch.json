@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${workspaceRoot}",
             "env": {},
-            "args": ["./testdata/Planet.vcxproj"]
+            "args": ["-prefix=Prefix", "./testdata/Planet.vcxproj"]
         }
     ]
 }
