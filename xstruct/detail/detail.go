@@ -25,12 +25,42 @@ func CreateProgram(path string) bytes.Buffer {
 	}
 	var buf bytes.Buffer
 	for _, class := range namespace.Map {
-		WriteProgram(&buf, class)
+		WriteClassDef(&buf, class)
 	}
+	root, err := xstruct.DefineClassA(namespace, sc.ToPath())
+	if err != nil {
+		log.Fatal(err)
+	}
+	WriteFuncDef(&buf, root)
 	return buf
 }
 
-func WriteProgram(buf *bytes.Buffer, class *xstruct.Class) {
+func WriteFuncDef(buf *bytes.Buffer, class *xstruct.Class) {
+	buf.WriteString("func Load")
+	buf.WriteString(class.UniqueName)
+	buf.WriteString("(path string) ")
+	buf.WriteString(class.UniqueName)
+	buf.WriteString(" {")
+	buf.WriteString(`
+    xmlFile, err := os.Open(path)
+    if err != nil {
+    	return nil, err
+    }
+    defer xmlFile.Close()
+    xmlData, err := ioutil.ReadAll(xmlFile)
+    if err != nil {
+    	return nil, err
+    }`)
+	buf.WriteString("\n")
+	buf.WriteString("    var data ")
+	buf.WriteString(class.UniqueName)
+	buf.WriteString(`
+    xml.Unmarshal(xmlData, &data)
+    return &data, nil`)
+	buf.WriteString("\n}")
+}
+
+func WriteClassDef(buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("type ")
 	buf.WriteString(class.UniqueName)
 	buf.WriteString(" {\n")
