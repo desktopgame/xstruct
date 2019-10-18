@@ -27,7 +27,7 @@ func DefineClassA(namespace *Namespace, path []string) (*Class, error) {
 	un := strings.Join(path, "")
 	var buf bytes.Buffer
 	for _, component := range path {
-		buf.WriteString(strings.Title(strings.ToLower(component)))
+		buf.WriteString(toWord(component))
 	}
 	return DefineClass(namespace, un, buf.String(), path[len(path)-1])
 }
