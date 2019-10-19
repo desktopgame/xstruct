@@ -2,6 +2,7 @@ package detail
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"unicode"
 
@@ -47,11 +48,8 @@ func CreateProgram(path string, opt Option) bytes.Buffer {
 
 func WriteFuncDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 	// LoadFunc
-	buf.WriteString("func Load")
-	buf.WriteString(fixWord(opt, class.UserName))
-	buf.WriteString("(path string) (*")
-	buf.WriteString(fixWord(opt, class.UserName))
-	buf.WriteString(", error) {")
+	buf.WriteString(fmt.Sprintf("func Load%s(path string)", fixWord(opt, class.UserName)))
+	buf.WriteString(fmt.Sprintf(" (*%s, error) {", fixWord(opt, class.UserName)))
 	buf.WriteString(`
     xmlFile, err := os.Open(path)
     if err != nil {
@@ -63,8 +61,7 @@ func WriteFuncDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
     	return nil, err
     }`)
 	buf.WriteString("\n")
-	buf.WriteString("    var data ")
-	buf.WriteString(fixWord(opt, class.UserName))
+	buf.WriteString(fmt.Sprintf("    var data %s", fixWord(opt, class.UserName)))
 	buf.WriteString(`
     xml.Unmarshal(xmlData, &data)
     return &data, nil`)
@@ -72,12 +69,8 @@ func WriteFuncDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 	buf.WriteString("\n")
 	buf.WriteString("\n")
 	// SaveFunc
-	buf.WriteString("func Save")
-	buf.WriteString(fixWord(opt, class.UserName))
-	buf.WriteString("(path string, data *")
-	buf.WriteString(fixWord(opt, class.UserName))
-	buf.WriteString(", perm os.FileMode) error")
-	buf.WriteString(" {")
+	buf.WriteString(fmt.Sprintf("func Save%s", fixWord(opt, class.UserName)))
+	buf.WriteString(fmt.Sprintf("(path string, data *%s, perm os.FileMode) error {", fixWord(opt, class.UserName)))
 	buf.WriteString(`
     buf, err := xml.MarshalIndent(data, "", "    ")
     if err != nil {
@@ -94,28 +87,14 @@ func WriteFuncDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
 }
 
 func WriteClassDef(opt Option, buf *bytes.Buffer, class *xstruct.Class) {
-	buf.WriteString("type ")
-	buf.WriteString(fixWord(opt, class.UserName))
-	buf.WriteString(" struct {\n")
+	buf.WriteString(fmt.Sprintf("type %s struct {\n", fixWord(opt, class.UserName)))
 	buf.WriteString("    // define attribute\n")
 	for k, _ := range class.Attributes {
-		buf.WriteString("    ")
-		buf.WriteString("Attr")
-		buf.WriteString(toWord(k))
-		buf.WriteString(" string `xml:\"")
-		buf.WriteString(k)
-		buf.WriteString(",attr\"`\n")
+		buf.WriteString(fmt.Sprintf("    Attr%s string `xml:\"%s,attr\"`\n", toWord(k), k))
 	}
 	buf.WriteString("    // define subelement\n")
 	for _, class := range class.InnerClasses {
-		buf.WriteString("    ")
-		buf.WriteString("Sub")
-		buf.WriteString(toWord(class.SimpleUserName))
-		buf.WriteString(" []*")
-		buf.WriteString(fixWord(opt, class.UserName))
-		buf.WriteString(" `xml:\"")
-		buf.WriteString(class.SimpleName)
-		buf.WriteString("\"`\n")
+		buf.WriteString(fmt.Sprintf("    Sub%s []*%s `xml:\"%s\"`\n", toWord(class.SimpleUserName), fixWord(opt, class.UserName), class.SimpleName))
 	}
 	buf.WriteString("    // define content\n")
 	buf.WriteString("    Content string `xml:\",chardata\"`\n")
